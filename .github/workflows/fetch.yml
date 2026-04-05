@@ -1,0 +1,33 @@
+name: Fetch Solana Data
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run data fetch
+        run: node scripts/fetch.js
+
+      - name: Commit and push
+        run: |
+          git config user.name "bot"
+          git config user.email "bot@github.com"
+          git add data/solana-history.json
+          git commit -m "Auto update Solana data" || echo "No changes"
+          git push
