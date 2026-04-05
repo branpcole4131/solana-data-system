@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Solana Analytics Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      background: #0f172a;
+      color: white;
+      font-family: Arial;
+      text-align: center;
+    }
+    canvas {
+      max-width: 900px;
+      margin: 20px auto;
+    }
+    .info {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Solana Market Dashboard</h1>
+
+<canvas id="priceChart"></canvas>
+
+<div class="info">
+  <p id="latest"></p>
+</div>
+
+<script>
+async function loadData() {
+  const res = await fetch("/data/solana-history.json");
+  const data = await res.json();
+
+  if (!data.length) {
+    document.getElementById("latest").innerText = "Waiting for data...";
+    return;
+  }
+
+  const labels = data.map(d => new Date(d.timestamp).toLocaleTimeString());
+  const prices = data.map(d => d.price);
+
+  const latest = data[data.length - 1];
+
+  document.getElementById("latest").innerText =
+    `Price: $${latest.price} | Signal: ${latest.signal}`;
+
+  const ctx = document.getElementById("priceChart");
+
+  new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [{
+        label: "SOL Price",
+        data: prices,
+        borderWidth: 2
+      }]
+    }
+  });
+}
+
+loadData();
+</script>
+
+</body>
+</html>
