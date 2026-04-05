@@ -1,0 +1,8 @@
+{
+  "name": "solana-data-system",
+  "version": "1.0.0",
+  "description": "Automated Solana data pipeline",
+  "dependencies": {
+    "node-fetch": "^2.6.7"
+  }
+}
